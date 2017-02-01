@@ -13,6 +13,6 @@ for tweet in twitter.search('"A am feeling"', count=1, cached=False):
 question = "Do you like apple pie?"
 
 print parse(question).split()
-for tweet in twitter.search('"apple pie"', count=1, cached=False):
+for tweet in twitter.search('"like apple pie"', count=1, cached=False):
     print plaintext(tweet.text)
 
