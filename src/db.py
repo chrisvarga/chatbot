@@ -20,7 +20,7 @@ prev = None
 
 for i in range(2):
     print(i)
-    for tweet in engine.search("the", start=prev, count=100, cached=False):
+    for tweet in engine.search("i", start=prev, count=100, cached=False):
         print("")
         print(tweet.text)
         print(tweet.author)
