@@ -2,6 +2,9 @@ from pattern.web import Twitter, plaintext
 from pattern.en import tag, parse
 
 def classify_qa(tweet):
+    for word, pos in tag(tweet):
+        if pos == "WP" or pos == "WRB" or pos == "WP$":
+            return "question"
     if "?" in tweet:
         return "question"
     else:
@@ -11,10 +14,8 @@ twitter = Twitter(language='en')
 
 input = raw_input(">>> ")
 while input != "exit":
-    if classify_qa(input) == "question":
-        print("question")
-    else:
-        print("statement")
+    print classify_qa(input)
+    
     input = raw_input(">>> ")
 
 '''
