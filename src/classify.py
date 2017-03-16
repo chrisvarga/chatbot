@@ -12,15 +12,17 @@ def classify_question(tweet):
     else:
         return 0
 
-table = Datasheet.load(pd("tweets.csv"))
+def get_total_questions(file_name):
+    table = Datasheet.load(pd(file_name))
 
-num_questions = 0
-num_tweets = len(table)
+    num_questions = 0
+    num_tweets = len(table)
 
-for tweet in table:
-    num_questions += classify_question(tweet[1])
+    for tweet in table:
+        num_questions += classify_question(tweet[1])
 
-print("total tweets: " + str(num_tweets))
-print("number of questions: " + str(num_questions))
-print("percentage of questions: " +
-        str(round(float(num_questions)/num_tweets,2)*100) + "%")
+    print("total tweets: " + str(num_tweets))
+    print("number of questions: " + str(num_questions))
+    print("percentage of questions: " +
+            str(round(float(num_questions)/num_tweets,2)*100) + "%")
+    return num_questions
