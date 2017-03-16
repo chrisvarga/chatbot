@@ -23,4 +23,4 @@ for tweet in table:
 print("total tweets: " + str(num_tweets))
 print("number of questions: " + str(num_questions))
 print("percentage of questions: " +
-        str(round(float(num_questions)/num_tweets,2)) + "%")
+        str(round(float(num_questions)/num_tweets,2)*100) + "%")
