@@ -93,9 +93,9 @@ def latent_semantic_analysis(inp):
     i = 0
     docs = ();
     for tweet in table:
-        if i == 5:
+        if i == 10:
             break
-        d = Document(tweet, name=tweet)
+        d = Document(tweet[1], name=tweet[1])
         docs = docs + (d,)
         i = i + 1
 
@@ -103,7 +103,7 @@ def latent_semantic_analysis(inp):
     x = Document(inp, name=inp)
     docs = docs + (x,)
     m = Model(docs)
-    m.reduce(2)
+    m.reduce(5)
 
     print "the topics are:"
     topics = []
@@ -121,8 +121,8 @@ def latent_semantic_analysis(inp):
 
 inp = raw_input("$ ")
 while inp != 'exit':
-    responses = kmeans_cluster(inp)
-    print choice(responses)
-    #latent_semantic_analysis(inp)
+    #responses = kmeans_cluster(inp)
+    #print choice(responses)
+    latent_semantic_analysis(inp)
     inp = raw_input("$ ")
 
