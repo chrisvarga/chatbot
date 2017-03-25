@@ -82,7 +82,7 @@ for tweet in table:
 
 inp = raw_input("$ ")
 while inp != 'exit':
-    tweets = kmeans_cluster(inp)
+    #tweets = kmeans_cluster(inp)
     print rank_response(tweets, inp)[0].values()[0]
     inp = raw_input("$ ")
 

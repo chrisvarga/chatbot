@@ -5,8 +5,9 @@
 #
 
 from pattern.db import Datasheet, pd
-from pattern.vector import Document, Model, KMEANS, count, COSINE, HIERARCHICAL
+from pattern.vector import Document, Model, KMEANS, count, COSINE, HIERARCHICAL, TFIDF
 from random import choice
+from pattern.en import wordnet
 
 def classify_question(tweet):
     if "?" in tweet or tweet.startswith("why") or tweet.startswith("how"):
@@ -118,11 +119,88 @@ def latent_semantic_analysis(inp):
             for feature, w2 in m.lsa.concepts[concept].items():
                 if w1 != 0 and w2 != 0:
                     print (feature, w1 * w2)
+#############################################################################
 
-inp = raw_input("$ ")
-while inp != 'exit':
-    #responses = kmeans_cluster(inp)
-    #print choice(responses)
-    latent_semantic_analysis(inp)
-    inp = raw_input("$ ")
 
+#Get subjects based on the imput sentence
+def get_input_subjects(sentence):
+    words = list(sentence.split())
+    newList = list(sentence.split())
+    
+    #For each word get some new words that deal with it.
+    for word in words:
+        try:
+            newWord = wordnet.synsets(word)[0]
+            for synonyms in newWord.synonyms:
+                if synonyms not in newList:
+                    newList.append(synonyms)
+            for antonym in newWord.antonym:
+                if antonym not in newList:
+                    newList.append(antonym)
+            for hypernyms in newWord.hypernyms:
+                if hypernyms not in newList:
+                    newList.append(hypernyms)
+            for hyponyms in newWord.hyponyms:
+                if hyponyms not in newList:
+                    newList.append(hyponyms)
+        
+        except:
+            pass
+    
+    #Stick them all back together
+    newSentence = " ".join(newList)
+    return Document(newSentence).vector
+
+#Get Tweets based on subjects from a set file, maxTweet is the total amount
+#of tweets it looks for 
+def get_tweets_with_subject(subjects, dbFile, maxTweet):
+    
+    #Load DB
+    table = Datasheet.load(pd(dbFile))
+
+    tweets = []
+    #For each tweet check if the subject matchs any from the input
+    for tweet in table:
+        tweetDoc =  Document(tweet[1])
+        #This is where it matches from the list of subjects
+        results = any(x in tweetDoc.vector for x in subjects)
+        if results:
+            tweets.append(tweet[1])
+        #If it reaches the maximum end early
+        if len(tweets) > maxTweet:
+            return tweets
+    return tweets
+
+#Uses tfidf with LSA see https://technowiki.wordpress.com/2011/08/27/latent-semantic-analysis-lsa-tutorial/
+def get_tfidf(inp, sentences):
+    
+    #Place the input into the first node
+    ds = [Document(inp, name='input')]
+    thisType = 0
+    
+    #For each sentence add a Document node
+    for x in range(len(sentences)):
+        newDoc = Document(sentences[x], name=str(x))
+        ds.append(newDoc)
+        thisType = thisType + 1
+    
+    #Create the TFIDF Model
+    model = Model(documents=ds, weight=TFIDF)
+    
+    bestScore = 0
+    bestTweet = ""
+    #Find which sentence matches the most.
+    for x in range(1, len(ds)):
+        if model.similarity(ds[0], ds[x]) > bestScore:
+            bestScore = model.similarity(ds[0], ds[x])
+            bestTweet = ds[x]
+    
+    #This will happen when the scores remain all zeros
+    if bestTweet == "":
+        bestTweet = "I am sorry I do not understand"
+    #Turn it back into the sentence
+    else:
+        bestTweet = sentences[int(bestTweet.name)]
+
+    return bestTweet
+    
