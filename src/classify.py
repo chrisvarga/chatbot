@@ -126,7 +126,7 @@ def latent_semantic_analysis(inp):
 def get_input_subjects(sentence):
     words = list(sentence.split())
     newList = list(sentence.split())
-    
+    newSentence = words
     #For each word get some new words that deal with it.
     for word in words:
         try:
@@ -148,7 +148,10 @@ def get_input_subjects(sentence):
             pass
     
     #Stick them all back together
-    newSentence = " ".join(newList)
+    try:
+        newSentence = " ".join(newList)
+    except:
+        pass
     return Document(newSentence).vector
 
 #Get Tweets based on subjects from a set file, maxTweet is the total amount
