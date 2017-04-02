@@ -6,7 +6,7 @@ groupsize = 20
 maxRounds = 2
 
 
-db.update_db(databaseFileName, "", 1000, False)
+db.update_db(databaseFileName, "i", 1000, False)
 
 #This Whole loop thing needs to be fixed. Other options wont take the first input
 inp = None    
@@ -28,7 +28,7 @@ while inp != 'exit':
         similarTweets = classify.get_tweets_with_subject(subjects, databaseFileName, groupsize)
         if rounds > maxRounds:
             break
-        db.update_db(databaseFileName, "", 1000, False) 
+        db.update_db(databaseFileName, inp.split(' ')[0], 1000, False) 
         rounds = rounds + 1
     
     #Print the best result from all that was found.
