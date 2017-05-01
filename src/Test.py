@@ -13,15 +13,15 @@ total = 0
 found = 0
 #This Whole loop thing needs to be fixed. Other options wont take the first input
 f = open("testSentences.txt")
+#f = open("testSentencesSlang.txt")
 line = f.readline()
 while line != "":
     #Get input
     inp = line
-    print(inp)
+    print("input: " + inp)
     #Get all of inputs subjects
     subjects = classify.get_input_subjects(inp)
-    
-    
+
     #Get tweets until group size is reached, stops if rounds get to high to
     #prevent over requesting from twitter
     rounds = 0
@@ -31,12 +31,13 @@ while line != "":
         similarTweets = classify.get_tweets_with_subject(subjects, databaseFileName, groupsize)
         if rounds > maxRounds:
             break
-        #db.update_db(databaseFileName, inp.split(' ')[0], 1000, False) 
+        #db.update_db(databaseFileName, inp.split(' ')[0], 1000, False)
         rounds = rounds + 1
-    
+
     #Print the best result from all that was found.
     response = classify.get_tfidf(inp, similarTweets)
-    print (response)
+    print("response: " + response)
+    print("-------------")
     if response != "I am sorry I do not understand":
         found = found + 1
     total = total + 1
